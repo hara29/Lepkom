@@ -1,0 +1,91 @@
+{{define "layout"}}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{.Title}} - LePKom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f8fafc;
+        color: #333;
+      }
+      /* Navbar */
+      nav {
+        background: #0f3d2e; /* hijau tua natural */
+        padding: 15px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      nav .brand {
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      nav .menu a {
+        color: white;
+        text-decoration: none;
+        margin-left: 20px;
+        font-size: 14px;
+        transition: 0.2s;
+      }
+      nav .menu a:hover {
+        opacity: 0.8;
+      }
+      /* Container */
+      .container {
+        max-width: 900px;
+        margin: 60px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        border-top: 5px solid #14532d; /* aksen hijau */
+      }
+      /* TEXT */
+      h1 {
+        margin-bottom: 15px;
+        color: #14532d;
+      }
+      h2 {
+        margin-bottom: 10px;
+        color: #14532d;
+      }
+      p {
+        line-height: 1.6;
+        margin-top: 10px;
+      }
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+        font-size: 14px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <div class="brand">LePKom</div>
+      <div class="menu">
+        <a href="/">Home</a>
+        <a href="/profile">Profile</a>
+        <a href="/projects">Projects</a>
+      </div>
+    </nav>
+    <!-- Container -->
+    <div class="container">{{block "content" .}}{{end}}</div>
+    <!-- Footer -->
+    <footer>© 2026 LePKom. All rights reserved.</footer>
+  </body>
+</html>
+{{end}}

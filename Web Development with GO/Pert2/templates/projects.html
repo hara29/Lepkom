@@ -1,0 +1,15 @@
+{{define "content"}}
+{{if .Projects}}
+<h3>Total Projects: {{.TotalProjects}}</h3>
+<div>
+{{range .Projects}}
+<div>
+	<h4 style="margin-top: 50px;">Nama Project: {{.Name}}</h4>
+	<p>Deskripsi Project: {{.Description}}</p>
+</div>
+{{end}}
+</div>
+{{else}}
+<p>No projects available</p>
+{{end}}
+{{end}}
