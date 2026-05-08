@@ -1,0 +1,97 @@
+{{define "content"}}
+
+<div class="container">
+
+<h1>Edit Produk</h1>
+
+{{if .Error}}
+    <div class="error">
+        {{.Error}}
+    </div>
+{{end}}
+
+<div class="form-section">
+    <form action="/update" method="POST" enctype="multipart/form-data">
+
+        <input
+            type="hidden"
+            name="id"
+            value="{{.Product.Id}}"
+        >
+
+        <div class="form-group">
+            <label>Nama Produk</label>
+
+            <input
+                type="text"
+                name="name"
+                value="{{.Product.Name}}"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Harga</label>
+
+            <input
+                type="text"
+                name="price"
+                value="{{.Product.Price}}"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Stock</label>
+
+            <input
+                type="text"
+                name="stock"
+                value="{{.Product.Stock}}"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+
+            <label>Status Active</label>
+
+            <input
+                type="checkbox"
+                name="is_active"
+                value="true"
+
+                {{if .Product.IsActive}}
+                    checked
+                {{end}}
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Upload Gambar Baru</label>
+
+            <input
+                type="file"
+                name="image"
+            >
+
+        </div>
+
+        <button type="submit">
+            Update Produk
+        </button>
+
+    </form>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+    <a href="/">
+        ← Kembali ke Home
+    </a>
+</div>
+
+</div>
+
+{{end}}

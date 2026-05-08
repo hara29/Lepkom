@@ -1,0 +1,125 @@
+{{define "content"}}
+
+<div class="container">
+
+<h1>Data Produk</h1>
+
+{{if .Error}}
+    <div class="error">
+        {{.Error}}
+    </div>
+{{end}}
+
+<div class="form-section">
+    <h2>Tambah Produk</h2>
+
+    <form action="/create" method="POST" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label>ID Produk</label>
+            <input type="text" name="id" required>
+        </div>
+
+        <div class="form-group">
+            <label>Nama Produk</label>
+            <input type="text" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Harga</label>
+            <input type="text" name="price" required>
+        </div>
+
+        <div class="form-group">
+            <label>Stock</label>
+            <input type="text" name="stock" required>
+        </div>
+
+        <div class="form-group">
+            <label>Gambar</label>
+            <input type="file" name="image" >
+        </div>
+
+        <button type="submit">Tambah Produk</button>
+
+    </form>
+</div>
+
+<hr>
+
+<div class="table-section">
+    <h2>List Produk</h2>
+
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Harga</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Tanggal Dibuat</th>
+            <th>Gambar</th>
+            <th>Aksi</th>
+        </tr>
+
+        {{range .Products}}
+
+        <tr>
+
+            <td>{{.Id}}</td>
+            <td>{{.Name}}</td>
+            <td>{{.Price}}</td>
+            <td>{{.Stock}}</td>
+
+            <td>
+                {{if .IsActive}}
+                    Active
+                {{else}}
+                    Non Active
+                {{end}}
+            </td>
+
+            <td>{{.CreatedAt}}</td>
+
+            <td>
+                <img
+                    src="/image?id={{.Id}}"
+                    width="100"
+                >
+            </td>
+
+            <td>
+
+                <a href="/edit?id={{.Id}}">
+                    Edit
+                </a>
+
+                <br><br>
+
+                <form action="/delete" method="POST">
+
+                    <input
+                        type="hidden"
+                        name="id"
+                        value="{{.Id}}"
+                    >
+
+                    <button type="submit" class="delete-btn">
+                        Delete
+                    </button>
+
+                </form>
+
+            </td>
+
+        </tr>
+
+        {{end}}
+
+    </table>
+</div>
+
+</div>
+
+{{end}}
