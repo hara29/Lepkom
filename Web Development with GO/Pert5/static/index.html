@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <script type="module">
+        import { LitElement, html, css } from 'https://unpkg.com/lit@3.1.2/index.js?module';
+
+        class TaskApp extends LitElement {
+            static properties = {
+                tasks: { type: Array },
+                editingTask: { type: Object }
+            };
+
+            static styles = css`
+        ul { list-style: none; padding: 0; }
+        li { margin: 8px 0; border-bottom: 1px solid #ccc; padding: 4px; }
+        button { margin: 4px; }
+        .created { font-size: 0.8em; color: gray; }
+        .modal {
+          position: fixed; top: 50%; left: 50%;
+          transform: translate(-50%, -50%);
+          background: white; padding: 20px;
+          border: 1px solid #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .overlay {
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.5);
+        }
+      `;
+
+            constructor() {
+                super();
+                this.tasks = [];
+                this.editingTask = null;
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                this.loadTasks();
+            }
+
+            async loadTasks() {
+                const res = await fetch('/api/tasks');
+                const json = await res.json();
+                this.tasks = json.data || [];
+            }
+
+            async createTask(title, description, status) {
+                const res = await fetch('/api/tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, description, status })
+                });
+                const json = await res.json();
+                this.tasks = [...this.tasks, json.data];
+            }
+
+            async updateTask(id, title, description, status) {
+                const res = await fetch(`/api/tasks/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, description, status })
+                });
+                const json = await res.json();
+                this.tasks = this.tasks.map(t => t.id === id ? json.data : t);
+                this.editingTask = null;
+            }
+
+            async deleteTask(id) {
+                await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+                this.tasks = this.tasks.filter(t => t.id !== id);
+            }
+
+            render() {
+                return html`
+          <h1>Daftar Task</h1>
+          <ul>
+            ${this.tasks.map(t => html`
+              <li>
+                <strong>${t.title}</strong><br>
+                ${t.description}<br>
+                Status: ${t.status}<br>
+                <span class="created">Created: ${new Date(t.created_at).toLocaleString()}</span><br>
+                <button @click=${() => this.editingTask = t}>Edit</button>
+                <button @click=${() => this.deleteTask(t.id)}>Delete</button>
+              </li>
+            `)}
+          </ul>
+
+          <h2>Tambah Task</h2>
+          <form @submit=${this.handleSubmit}>
+            <input id="title" placeholder="Judul" required>
+            <input id="desc" placeholder="Deskripsi" required>
+            <select id="status">
+              <option value="pending">Pending</option>
+              <option value="in-progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+            <button type="submit">Tambah</button>
+          </form>
+
+          ${this.editingTask ? html`
+            <div class="overlay" @click=${() => this.editingTask = null}></div>
+            <div class="modal">
+              <h2>Edit Task</h2>
+              <form @submit=${this.handleEditSubmit}>
+                <input id="edit-title" .value=${this.editingTask.title} required>
+                <input id="edit-desc" .value=${this.editingTask.description} required>
+                <select id="edit-status" .value=${this.editingTask.status}>
+                  <option value="pending">Pending</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="done">Done</option>
+                </select>
+                <button type="submit">Update</button>
+                <button type="button" @click=${() => this.editingTask = null}>Cancel</button>
+              </form>
+            </div>
+          ` : ''}
+        `;
+            }
+
+            handleSubmit(e) {
+                e.preventDefault();
+                const title = this.renderRoot.querySelector('#title').value;
+                const desc = this.renderRoot.querySelector('#desc').value;
+                const status = this.renderRoot.querySelector('#status').value;
+                this.createTask(title, desc, status);
+                e.target.reset();
+            }
+
+            handleEditSubmit(e) {
+                e.preventDefault();
+                const title = this.renderRoot.querySelector('#edit-title').value;
+                const desc = this.renderRoot.querySelector('#edit-desc').value;
+                const status = this.renderRoot.querySelector('#edit-status').value;
+                this.updateTask(this.editingTask.id, title, desc, status);
+            }
+        }
+
+        customElements.define('task-app', TaskApp);
+    </script>
+</head>
+
+<body>
+    <task-app></task-app>
+</body>
+
+</html>
