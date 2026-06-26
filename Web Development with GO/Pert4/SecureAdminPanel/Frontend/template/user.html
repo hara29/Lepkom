@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Page</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>User Dashboard</h2>
+        <p>Selamat datang, <b>{{.Username}}</b></p>
+        <p>Halaman ini hanya boleh diakses oleh role user.</p>
+
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+</body>
+</html>
